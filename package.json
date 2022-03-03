@@ -1,0 +1,29 @@
+{
+  "name": "srv",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "pm2 start app.js --name yunsrv --watch",
+    "db": "sequelize-auto -o  ./model -d yun -h 127.0.0.1 -u root -p 3306 -x root -e mysql"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@alicloud/sms-sdk": "^1.1.6",
+    "axios": "^0.24.0",
+    "body-parse": "^0.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "ioredis": "^4.28.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.0.14",
+    "mysql2": "^2.3.3",
+    "pinyin": "^2.10.2",
+    "sequelize": "^6.17.0",
+    "sequelize-auto": "^0.8.8",
+    "utility": "^1.17.0"
+  }
+}
