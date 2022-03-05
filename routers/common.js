@@ -15,8 +15,9 @@ router.post('/sendSms',async (req,res)=>{
 
     try{
 
+        const key = 'code_'+phone;
         // 先判断是否已经有验证码发出 避免用户频繁 发送短信
-        const _code = await redis.get('code_'+phone);
+        const _code =  req.session[key];
         if(_code)  return   res.send({ success:true,code: _code, info:'已经发送请耐心等待' })
 
         // 生成随机的4位数
@@ -36,9 +37,8 @@ router.post('/sendSms',async (req,res)=>{
         if ('OK' === 'OK') {
 
             //处理返回参数 redis当中保存当前的短信和用户关联
-            // redis.set(key,val,'EX',过期时间单位是秒)
-            // redis.set('code_'+phone,randomstr,'EX',300)
-            // res.send({ success:true,code: randomstr  })
+            req.session[key] = randomstr
+            res.send({ success:true,code: randomstr  })
         }
     }catch(e){
 
@@ -48,7 +48,6 @@ router.post('/sendSms',async (req,res)=>{
 
 
 })
-
 
 // 首页热门线路
 router.post('/hotline', async (req,res)=>{
@@ -149,5 +148,13 @@ router.post('/payNotify', async (req,res)=>{
 
 })
 
-
+router.post('/checkUserByOpenId',async (req,res)=>{
+    
+    const { User }  = req.model;
+    const openid = req.headers['X-WX-OPENID'];
+    let u = await User.findOne({wxOpenId:openid});
+    if(u)return res.send({userInfo:u ,exist:true })
+    
+    res.send({exist:false})
+})
 module.exports = router;

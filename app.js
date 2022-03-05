@@ -1,7 +1,17 @@
 const express = require('express');
 const app = express();
-const tokenscrect = 'iverson7'
+
 const db =  require('./db')
+// session的使用
+var session = require('express-session');
+app.use(session({
+  secret: 'qfedu',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+      maxAge:120*1000
+   }
+}))
 
 // 跨域 cors
 const cors = require('cors')
@@ -69,36 +79,43 @@ const checkapi = [
         '/api/v1/order/preOrder',
         '/api/v1/order/getAll',
         '/api/v1/linkman/add',
-        '/api/v1/linkman/getAll'
+        '/api/v1/linkman/getAll',
+        
 ]
 
-  // 如果请求的地址在检测检测范围以内 就需要对token进行检验
-app.use((req,res,next)=>{
+//   // 如果请求的地址在检测检测范围以内 就需要对token进行检验
+// app.use(async (req,res,next)=>{
 
-    const { url } = req;
+//     const { url } = req;
   
-    console.log('url',url)
-    if(checkapi.find(item=> url.startsWith(item) )){
-        // 如果是在需要检测的api 就从请求头当中 获取 token
-        const token = req.headers['authorization'];
-        try{
-            // jwt.verify(token,加密的时候使用的密匙) 检验并解密 token
-            const decode = jwt.verify(token,tokenscrect)
-            // 把解密之后的内容 挂在req对象上 方便后面的路由直接读取
-            req.decode = decode
-          
-            next()
-        } catch {
-           res.statusCode = 403
-           res.end()
-        }
+//     console.log('url',url)
+//     if(checkapi.find(item=> url.startsWith(item) )){
+//         // 如果是在需要检测的api 就从请求头当中 获取 token
+//         const openid = req.headers['X-WX-OPENID'];
+//         const { User } = req.model;
+//         let u = await User.findOne({
+//             where: {
+//                 openid
+//             }
+//         })
+        
+//         try{
+//             if(!openid) throw new Error('openid不正确')
+//             req.decode = { // 挂在uid在接口当中使用
+//                 uid: u.uid
+//             }
+//             next()
+//         } catch {
+//            res.statusCode = 403
+//            res.end()
+//         }
        
       
-    } else {
-        next()
-    }
+//     } else {
+//         next()
+//     }
 
-})
+// })
 
 
 
@@ -124,6 +141,6 @@ app.use('/api/v1/common', commonRouter )
 app.use('/api/v1/city', cityRouter )
 
 
-app.listen(80,()=>{
+app.listen(3000,()=>{
     console.log('srv is running at port 80')
 })

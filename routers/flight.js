@@ -147,43 +147,49 @@ router.post('/getHotFlight',async (req,res)=>{
 
 // 查询所有的航班信息
 router.post('/getAll', async (req,res)=>{
-        const { Flight } = req.model;
-        let { sdate,edate,page,limit,startCity,arriveCity ,startStationId,arriveStationId } = req.body;
-        
-        if(!startCity)  return res.send({success:false,info:'请选择起点城市'})
-        if(!arriveCity)  return res.send({success:false,info:'请选择到达城市'})
-       
-         page = page || 1; // 当前第几页
-         limit = limit || 20; // 单页返回的条数限制
+  const { Flight } = req.model;
+  const { Op } = sequelize
+  let { sdate,edate,page,limit,startCity,arriveCity ,startStationId,arriveStationId } = req.body;
+  
+  // if(!startCity)  return res.send({success:false,info:'请选择起点城市'})
+  // if(!arriveCity)  return res.send({success:false,info:'请选择到达城市'})
+ 
+   page = page || 1; // 当前第几页
+   limit = limit || 20; // 单页返回的条数限制   
+   
 
-          // 初始化 查询条件      
-          let where = {  }
-          // 设置了起始时间
-          if(sdate && !edate )  where.createdAt = { $gt: sdate }
-          // 设置了终点时间
-          if(!sdate && edate )  where.createdAt = { $lt: edate }
-          // 有起止时间
-          if(sdate && edate )  where.createdAt = { $and: [ 
-                                                            { $gt:sdate},
-                                                             {$lt:edate } 
-                                                    ] 
-                                                  }
-          if(startCity)  where.startCity = startCity; // 指定起点城市
-          if(arriveCity) where.arriveCity = arriveCity  // // 指定到达城市   
-          // 指定起点站点
-          if(startStationId) where.startStations = { $in:startStationId } 
-          // 指定到达站点
-          if(arriveStationId) where.arriveStations = { $in: arriveStationId }
-          
-          const skip =  (page - 1 ) * limit; // 查询的起点（偏移量）
-          try {
-            let fights = await Flight.find(where,{},{skip,limit}) // 分页查询
-            let count = await Flight.count(where) // 获取符合条件的总数
-            res.send({success:true,info:'查询成功',data:fights,count});
-          }catch(e){
-              console.log(e)
-            res.send({success:false,info:'获取失败'})
-          }
+    // 初始化 查询条件      
+    let where = {  }
+    // 设置了起始时间
+    if(sdate && !edate )  where.createdAt = { [Op.gt]: sdate }
+    // 设置了终点时间
+    if(!sdate && edate )  where.createdAt = { [Op.lt]: edate }
+    // 有起止时间
+    if(sdate && edate )  where.createdAt = { [Op.and]: [ 
+                                                      { $gt:sdate},
+                                                       {$lt:edate } 
+                                              ] 
+                                            }
+    if(startCity)  where.startCity = startCity; // 指定起点城市
+    if(arriveCity) where.arriveCity = arriveCity  // // 指定到达城市   
+    // 指定起点站点
+    if(startStationId) where.startStations = { [Op.in]:startStationId } 
+    // 指定到达站点
+    if(arriveStationId) where.arriveStations = { [Op.in]: arriveStationId }
+    
+    const offset =  (page - 1 ) * limit; // 查询的起点（偏移量）
+    try {
+   
+      const _res = await Flight.findAndCountAll({
+        where,
+        offset,
+        limit
+      })
+      res.send({success:true,info:'查询成功',data:_res.rows,count:_res.count});
+    }catch(e){
+        console.log(e)
+      res.send({success:false,info:'获取失败'})
+    }
 
 })
 
@@ -191,11 +197,11 @@ router.post('/getAll', async (req,res)=>{
 router.post('/getOne', async (req,res)=>{
 
     const { id  } = req.body;
-
+    const { Flight } = req.model
     if(!id) return res.send({success:false,info:'请传入一个正确的flighNum'})
 
     try{
-        const flight = await Flight.findById(id)
+        const flight = await Flight.findByPk(id)
          
 
 

@@ -9,8 +9,8 @@ router.post('/add', async (req,res)=>{
     if(!idNum) return res.send( {success:false,info:'请填写身份证号码'});
     if( !/^1[23456789]\d{9}$/.test(phone)  )  return res.send( {success:false,info:'请填写一个正确的手机号码'});
     
-   // 之后补全使用token的方式来获取uid
-    const { uid } = req.decode
+   // 使用openid来用 联系人的归属
+    const  uid  = req.headers['X-WX-OPENID'];
 
     // todo 我们需要对用户的 真实姓名和身份证号码进行检验  
 
@@ -58,7 +58,11 @@ router.post('/edit',async (req,res)=>{
 router.post('/getOne',async (req,res)=>{
     const { Linkman } = req.model;
     const { id } = req.body;
-    const info = await Linkman.findByPk(id);
+    const uid = req.headers['X-WX-OPENID'];
+    const info = await Linkman.findOne({
+        uid,
+        id
+    });
     res.send({
         success:true,
         data:info
@@ -68,8 +72,9 @@ router.post('/getOne',async (req,res)=>{
 
 // 获取全部的乘车人信息
 router.post('/getAll', async (req,res)=>{
-    const { Linkman } = req.model;
-    const { uid } = req.decode
+    const { Linkman ,User} = req.model;
+     const uid = req.headers['X-WX-OPENID'];
+  
 
      try{
 
@@ -89,8 +94,15 @@ router.post('/getAll', async (req,res)=>{
 router.post('/del', async (req,res)=>{
     const { Linkman } = req.model;
     const { id } = req.body;
-    await Linkman.destroy({where:{id}});
-    res.send({success:true})
+    const uid = req.headers['X-WX-OPENID'];
+    try {
+         let _res =  await Linkman.destroy({where:{id,uid}});
+         if(_res) return  res.send({success:true})
+         res.send( {success:false,info:'删除失败'});
+    } catch(e) {
+         res.send( {success:false,info:'删除失败'});
+    }
+   
 })
 
 module.exports = router;

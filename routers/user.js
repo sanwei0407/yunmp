@@ -4,12 +4,12 @@ const  router = express.Router();
 // 添加用户
 router.post('/add', async (req,res)=>{
     const { User } = req.model; 
-    const { wxInfo,phone,wxNickName,wxHeadPhoto,wxOpenId  } = req.body;
-    console.log( wxInfo)
-    // wxNickName,wxHeadPhoto,wxOpenId 这三个值都是从wxInfo
+    const {phone,wxNickName,wxHeadPhoto,wxOpenId  } = req.body;
+    const openid =  req.headers['X-WX-OPENID'];
+ 
     
     // 数据过滤
-    if(!wxNickName||!wxHeadPhoto||!wxOpenId) return res.send( {success:false,info:'请填写必要参数'});
+    if(!wxNickName||!wxHeadPhoto) return res.send( {success:false,info:'请填写必要参数'});
     if( !/^1[23456789]\d{9}$/.test(phone)  )  return res.send( {success:false,info:'请填写一个正确的手机号码'});
 
     // 添加入库
@@ -17,17 +17,14 @@ router.post('/add', async (req,res)=>{
         const one = await User.findOne({where:{ phone} }) // 找不到的话返回 null 
         if(one) return res.send({ success:false,info:'当前手机号码已经被占用' })
 
-        const u = await User.create({
+         await User.create({
             wxNickName,
             wxHeadPhoto,
-            wxInfo:JSON.stringify(wxInfo),
-            wxOpenId,
+            wxOpenId:openid,
             phone
         })
-        let tokenscrect = 'iverson7';
-        let token = req.jwt.sign({ wxOpenId,uid:u.uid},tokenscrect);
-     
-        res.send({success:true,info:'添加成功',token})
+
+        res.send({success:true,info:'添加成功'})
 
     } catch(e) {
         console.log(e);

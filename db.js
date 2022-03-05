@@ -1,8 +1,8 @@
 const Sequelize = require('sequelize')
 const initModels = require('./model/init-models')
 
-const sequelize = new Sequelize('yun', 'root', 'Qfdixon2022', {
-  host: '10.0.224.5',
+const sequelize = new Sequelize('yun', 'root', 'root', {
+  host: '127.0.0.1',
   dialect: 'mysql',
   define: {
     underscored: false,
