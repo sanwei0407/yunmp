@@ -2,7 +2,7 @@ const Sequelize = require('sequelize')
 const initModels = require('./model/init-models')
 
 const sequelize = new Sequelize('yun', 'root', 'root', {
-  host: '127.0.0.1',
+  host: '10.0.224.5',
   dialect: 'mysql',
   define: {
     underscored: false,
