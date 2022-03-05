@@ -36,7 +36,7 @@ router.post('/sendSms',async (req,res)=>{
 
         if ('OK' === 'OK') {
 
-            //处理返回参数 redis当中保存当前的短信和用户关联
+            //处理返回参数 在缓存中保存
             req.session[key] = randomstr
             res.send({ success:true,code: randomstr  })
         }
