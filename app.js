@@ -141,6 +141,6 @@ app.use('/api/v1/common', commonRouter )
 app.use('/api/v1/city', cityRouter )
 
 
-app.listen(3000,()=>{
+app.listen(80,()=>{
     console.log('srv is running at port 80')
 })
