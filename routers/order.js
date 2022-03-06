@@ -147,9 +147,9 @@ router.post('/getOne', async(req,res)=>{
           where:{flightNum: order.flightNum}
         })
         res.send({ success:true,info:'获取成功',data:{
-          ...order,
+          order,
           linkMan:JSON.parse(order.linkMan),
-          ...flight } 
+          flight } 
         })
 
     }catch(e){
