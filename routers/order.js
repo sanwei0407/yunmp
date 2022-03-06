@@ -252,7 +252,8 @@ router.post('/admin/getAll', async(req,res)=>{
             const _data = await Order.findAndCountAll({
               where,
               offset,
-              limit
+              limit,
+              include:[ Flight]
             })
             const {rows,count} = _data;
             res.send({success:true,info:'查询成功',data:rows,count});
