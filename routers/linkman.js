@@ -84,6 +84,7 @@ router.post('/getAll', async (req,res)=>{
         })
         res.send({success:true,info:'查询成功',data:linkmans})
      }catch(e){
+        console.log('e',e)
         res.send( {success:false,info:'未知错误 请于网站管理员联系'});
      }
 
