@@ -246,7 +246,7 @@ router.post('/admin/getAll', async(req,res)=>{
             
             await Order.belongsTo(Flight,{
               foreignKey:'flightNum',
-              targetKey:'id'
+              targetKey:'flightNum'
             })
 
             const _data = await Order.findAndCountAll({
