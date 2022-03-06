@@ -74,12 +74,16 @@ router.post('/getOne',async (req,res)=>{
 router.post('/getAll', async (req,res)=>{
     const { Linkman ,User} = req.model;
      const uid = req.headers['X-WX-OPENID'];
+    
+     return res.send(req.header);
   
 
      try{
 
         const linkmans = await Linkman.findOne({
-            where:{uid},
+            where:{
+                uid
+            },
             raw: true
         })
         res.send({success:true,info:'查询成功',data:linkmans})
