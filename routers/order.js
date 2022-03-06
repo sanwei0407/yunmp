@@ -136,15 +136,20 @@ router.post('/getAll', async(req,res)=>{
 // 查询单个订单的信息
 
 router.post('/getOne', async(req,res)=>{
+    const { Order ,Flight} = req.model;
     const { orderId } = req.body;
     if(!orderId) return res.send({success:false,info:'请传入orderid'})
     
     try{
-        const order = await Order.findById(orderId);
+        const order = await Order.findByPk(orderId);
         const flight = await Flight.findOne({
-          flightNum: order.flightNum
+          where:{flightNum: order.flightNum}
         })
-        res.send({ success:true,info:'获取成功',data:{order,flight } })
+        res.send({ success:true,info:'获取成功',data:{
+          ...order,
+          linkMan:JSON.parse(order.linkMan),
+          ...flight } 
+        })
 
     }catch(e){
 
