@@ -144,6 +144,7 @@ router.post('/payNotify', async (req,res)=>{
 
 
     } catch (e) {
+        console.log('e',e)
         res.error('失败')
     }
 
