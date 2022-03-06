@@ -31,7 +31,7 @@ router.post('/preOrder', async (req,res)=>{
         // if(code!=_code ) return res.send({success:false,info:'短信验证码不正确'})
         
         // 暂时我先写死uid = 1      todo 之后补全使用token的方式来获取uid
-        const { uid } = req.decode
+        const { uid } = req.headers['x-wx-openid'];
         // const uid = 1;
 
         // 先查询 航班信息 得到航班信息然后才能计算总价
@@ -62,7 +62,7 @@ router.post('/preOrder', async (req,res)=>{
                 startStationId,
                 arriveStationId,
                 orderDate,
-                linkMan ,
+                linkMan:JSON.stringify(linkMan) ,
                 flightNum ,
                 uid,
                 amount:amount*100,//换算成分
