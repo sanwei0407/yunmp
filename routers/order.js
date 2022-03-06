@@ -31,7 +31,7 @@ router.post('/preOrder', async (req,res)=>{
         // if(code!=_code ) return res.send({success:false,info:'短信验证码不正确'})
         
         // 暂时我先写死uid = 1      todo 之后补全使用token的方式来获取uid
-        const { uid } = req.headers['x-wx-openid'];
+        const  uid  = req.headers['x-wx-openid'];
         // const uid = 1;
 
         // 先查询 航班信息 得到航班信息然后才能计算总价
@@ -95,14 +95,16 @@ router.post('/getAll', async(req,res)=>{
 
          
          
-        const { uid }  = req.decode
+        const  uid   = req.headers['x-wx-openid'];
      
         const { Op }  = sequelize;
-        let where = {  }
+        let where = {
+            
+          }
          
           if(sdate && !edate )  where.createdAt = { [Op.gt]: sdate }
           if(!sdate && edate )  where.createdAt = { [Op.lt]: edate }
-          if(sdate && edate )  where.createdAt = {  [Op.and]: [ 
+          if(sdate && edate )   where.createdAt = {  [Op.and]: [ 
                                                             { $gt:sdate},
                                                              {$lt:edate } 
                                                     ] 

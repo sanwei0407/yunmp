@@ -62,6 +62,10 @@ module.exports = function(sequelize, DataTypes) {
     reason: {
       type: DataTypes.STRING(255),
       allowNull: true
+    },
+    uid: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize,
