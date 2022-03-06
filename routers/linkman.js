@@ -80,6 +80,7 @@ router.post('/getAll', async (req,res)=>{
             where:{
                 uid
             },
+            order:[['id','desc']],
             raw: true
         })
         res.send({success:true,info:'查询成功',data:linkmans})

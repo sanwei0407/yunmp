@@ -123,7 +123,8 @@ router.post('/getAll', async(req,res)=>{
               where,
               offset,
               limit,
-              include:[ Flight]
+              include:[ Flight],
+              order:[['orderid','desc']]
             })
             const {rows,count} = _data;
             res.send({success:true,info:'查询成功',data:rows,count});
@@ -254,7 +255,8 @@ router.post('/admin/getAll', async(req,res)=>{
               where,
               offset,
               limit,
-              include:[ Flight]
+              include:[ Flight],
+              order:[['orderid','desc']]
             })
             const {rows,count} = _data;
             res.send({success:true,info:'查询成功',data:rows,count});
