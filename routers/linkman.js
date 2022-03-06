@@ -16,7 +16,7 @@ router.post('/add', async (req,res)=>{
 
     // 添加入库
     try{
-        const one = await LinkMan.findOne({ where: { phone  } }) // 找不到的话返回 null 
+        const one = await Linkman.findOne({ where: { phone  } }) // 找不到的话返回 null 
         if(one) return res.send({ success:false,info:'当前手机号码已经被占用' })
 
         await Linkman.create({
