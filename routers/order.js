@@ -8,7 +8,7 @@ const sequelize = require('sequelize')
 
 router.post('/preOrder', async (req,res)=>{
 
-          const { Order,Flight } = req.model;
+        const { Order,Flight } = req.model;
 
         // uid 不能通过 客户端发送过来 *** 
         // uid 都应该从token当中获取
@@ -30,16 +30,15 @@ router.post('/preOrder', async (req,res)=>{
         // const _code  = await redis.get('code_'+phone)
         // if(code!=_code ) return res.send({success:false,info:'短信验证码不正确'})
         
-        // 暂时我先写死uid = 1      todo 之后补全使用token的方式来获取uid
-        const  uid  = req.headers['x-wx-openid'];
-        // const uid = 1;
+        const  openid  = req.headers['x-wx-openid'];
+        
 
         // 先查询 航班信息 得到航班信息然后才能计算总价
         const flight = await Flight.findOne({where:{flightNum}})
         // linkMan.length 乘车人数量 需要区分成人和儿童票
 
           // 过滤去已经选中的乘车人 
-          console.log('linkMan',linkMan)
+        console.log('linkMan',linkMan)
    
         const adult = linkMan.filter(item=>item.type=='成人').length;
         const child = linkMan.filter(item=>item.type=='儿童').length;
@@ -64,7 +63,7 @@ router.post('/preOrder', async (req,res)=>{
                 orderDate,
                 linkMan:JSON.stringify(linkMan) ,
                 flightNum ,
-                uid,
+                openid,
                 amount:amount*100,//换算成分
                 ip,
                 payAt:null,
