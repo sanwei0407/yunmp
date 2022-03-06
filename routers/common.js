@@ -86,7 +86,7 @@ router.post('/getMapGps',async (req,res)=>{
 
 router.post('/getLine', async(req,res)=>{
     let { from,to } =req.body;
-    const key = 'DC6BZ-TJ36W-THKRM-R5WLQ-LNVJ6-JMBV2';
+    const key = req.tenMapKey;
     let _res = await axios.get(`https://apis.map.qq.com/ws/direction/v1/driving/?from=${from}&to=${to}&output=json&callback=cb&key=${key}`)
     res.send({success:true,data:_res.data})
 })
@@ -158,5 +158,16 @@ router.post('/checkUserByOpenId',async (req,res)=>{
     if(u)return res.send({userInfo:u ,exist:true })
     
     res.send({exist:false})
+})
+
+// 地理信息逆向解析
+router.post('/getCityName', async (req,res)=>{
+    const { location } = req.body;
+    if(!location) return req.error('请填写正确的参数')
+    const key = req.tenMapKey;
+    let _res = await axios.get(`https://apis.map.qq.com/ws/geocoder/v1/?location=${location}&key=${key}`)
+    res.send({success:true,data:_res.data})
+
+
 })
 module.exports = router;

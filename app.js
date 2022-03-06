@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
-
 const db =  require('./db')
+const config = require('./config')
 // session的使用
 var session = require('express-session');
 app.use(session({
@@ -17,33 +17,23 @@ app.use(session({
 const cors = require('cors')
 app.use(cors()); // 解除cors跨域限制
 
-const  jwt = require('jsonwebtoken'); // token的操作  npm i jsonwebtoken
 
-const bodyParser = require('body-parser')
-// 针对表单格式传递的post body的参数 application/x-www-form-urlencoded parser
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
-// 针对的是已json形式 body 传参的  application/json
-var jsonParser = bodyParser.json()
-app.use(jsonParser)
-app.use(urlencodedParser)
+// express 当中使用自带的json方法和urlencoded方法来解析body内容
+app.use(express.urlencoded({ extended: false })) // urlencoded
+app.use(express.json()) // json 
 
-// token 中间件  通过中间件的方式 让后面的路由都可以在req当中获取jwt对象来操作token
-app.use((req,res,next)=>{
-        req.jwt  = jwt;
-        next()
-})
-// 处理sequelize Model挂在在组件上
+
 
 app.use((req,res,next)=>{
-         req.model = {};
-       
+        // 腾讯地图Key
+        req.tenMapKey = config.tenMapKey;
+        // 处理sequelize Model挂在在组件上
+        req.model = {};
         for(const item in db){
-            console.log('item',item)
             /// 把首字母转成大写 做区别性 非必要 个人习惯而已
             const firstLetter = item.slice(0,1).toUpperCase();
             const last = item.slice(1);
             const newName = firstLetter+last
-
             req.model[newName] = db[item]
 
         }
@@ -74,48 +64,6 @@ app.use((req,res,next)=>{
 
     next()
 })
-
-const checkapi = [
-        '/api/v1/order/preOrder',
-        '/api/v1/order/getAll',
-        '/api/v1/linkman/add',
-        '/api/v1/linkman/getAll',
-        
-]
-
-//   // 如果请求的地址在检测检测范围以内 就需要对token进行检验
-// app.use(async (req,res,next)=>{
-
-//     const { url } = req;
-  
-//     console.log('url',url)
-//     if(checkapi.find(item=> url.startsWith(item) )){
-//         // 如果是在需要检测的api 就从请求头当中 获取 token
-//         const openid = req.headers['X-WX-OPENID'];
-//         const { User } = req.model;
-//         let u = await User.findOne({
-//             where: {
-//                 openid
-//             }
-//         })
-        
-//         try{
-//             if(!openid) throw new Error('openid不正确')
-//             req.decode = { // 挂在uid在接口当中使用
-//                 uid: u.uid
-//             }
-//             next()
-//         } catch {
-//            res.statusCode = 403
-//            res.end()
-//         }
-       
-      
-//     } else {
-//         next()
-//     }
-
-// })
 
 
 
