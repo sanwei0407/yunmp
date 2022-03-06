@@ -116,13 +116,14 @@ router.post('/getAll', async(req,res)=>{
 
              await Order.belongsTo(Flight,{
               foreignKey:'flightNum',
-              targetKey:'id'
+              targetKey:'flightNum'
              })
 
             const _data = await Order.findAndCountAll({
               where,
               offset,
-              limit
+              limit,
+              include:[ Flight]
             })
             const {rows,count} = _data;
             res.send({success:true,info:'查询成功',data:rows,count});
