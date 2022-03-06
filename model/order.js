@@ -62,10 +62,6 @@ module.exports = function(sequelize, DataTypes) {
     reason: {
       type: DataTypes.STRING(255),
       allowNull: true
-    },
-    udpatedAt: {
-      type: DataTypes.DATE,
-      allowNull: true
     }
   }, {
     sequelize,
