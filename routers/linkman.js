@@ -75,7 +75,8 @@ router.post('/getAll', async (req,res)=>{
     const { Linkman ,User} = req.model;
      const uid = req.headers['X-WX-OPENID'];
     
-     return res.send(req.header);
+    //  return res.send(req.header);
+    console.log('req',req.header)
   
 
      try{
