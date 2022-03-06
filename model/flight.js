@@ -51,6 +51,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.SMALLINT,
       allowNull: true
     },
+    flightNum: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
     carLinker: {
       type: DataTypes.STRING(255),
       allowNull: true
