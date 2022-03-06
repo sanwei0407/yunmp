@@ -75,7 +75,6 @@ router.post('/getAll', async (req,res)=>{
     const { Linkman ,User} = req.model;
      const uid = req.headers['x-wx-openid'];
      try{
-
         const linkmans = await Linkman.findAll({
             where:{
                 uid
@@ -88,7 +87,6 @@ router.post('/getAll', async (req,res)=>{
         console.log('e',e)
         res.send( {success:false,info:'未知错误 请于网站管理员联系'});
      }
-
 })
 
 // 删除乘车人

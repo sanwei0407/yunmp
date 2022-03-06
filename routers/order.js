@@ -94,20 +94,20 @@ router.post('/getAll', async(req,res)=>{
 
          
          
-        const  uid   = req.headers['x-wx-openid'];
+        const  openid   = req.headers['x-wx-openid'];
      
         const { Op }  = sequelize;
-        let where = {
-            
-          }
+        let where = { openid  }
          
-          if(sdate && !edate )  where.createdAt = { [Op.gt]: sdate }
-          if(!sdate && edate )  where.createdAt = { [Op.lt]: edate }
-          if(sdate && edate )   where.createdAt = {  [Op.and]: [ 
-                                                            { $gt:sdate},
-                                                             {$lt:edate } 
-                                                    ] 
-                                                  }
+        if(sdate && !edate )  where.createdAt = { [Op.gt]: sdate }
+        if(!sdate && edate )  where.createdAt = { [Op.lt]: edate }
+        if(sdate && edate )   where.createdAt = {  [Op.and]: [ 
+                                                          { $gt:sdate},
+                                                           {$lt:edate } 
+                                                  ] 
+                                                }
+
+        if(orderState) where.orderState = orderState;
 
        
           const offset =  (page - 1 ) * limit; // 查询的起点（偏移量）
@@ -129,7 +129,6 @@ router.post('/getAll', async(req,res)=>{
             const {rows,count} = _data;
             res.send({success:true,info:'查询成功',data:rows,count});
           }catch(e){
-              console.log(e)
             res.send({success:false,info:'获取失败'})
           }
 
