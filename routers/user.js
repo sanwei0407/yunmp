@@ -5,7 +5,7 @@ const  router = express.Router();
 router.post('/add', async (req,res)=>{
     const { User } = req.model; 
     const {phone,wxNickName,wxHeadPhoto,wxOpenId  } = req.body;
-    const openid =  req.headers['X-WX-OPENID'];
+    const openid =  req.headers['x-wx-openid'];
  
     
     // 数据过滤

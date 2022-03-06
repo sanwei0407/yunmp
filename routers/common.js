@@ -151,7 +151,7 @@ router.post('/payNotify', async (req,res)=>{
 router.post('/checkUserByOpenId',async (req,res)=>{
     
     const { User }  = req.model;
-    const openid = req.headers['X-WX-OPENID'];
+    const openid = req.headers['x-wx-openid'];
     let u = await User.findOne({wxOpenId:openid});
     if(u)return res.send({userInfo:u ,exist:true })
     
