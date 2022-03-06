@@ -122,12 +122,13 @@ router.post('/getSysInfo', async (req,res)=>{
 
 // 模拟异步接受
 router.post('/payNotify', async (req,res)=>{
+    const { Order }  = req.model;
     const  {result_code,openid,total_fee,out_trade_no } = req.body;
     console.log('异步通知得到的信息',req.body)
 
     try {
         if(result_code === 'SUCCESS'){
-            const order = await Order.findById(out_trade_no);
+            const order = await Order.findOne({ where:{orderid: out_trade_no}});
             if(order.amount  == total_fee) {
                 // 更新订单状态
                 await order.update({
