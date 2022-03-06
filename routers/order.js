@@ -8,7 +8,7 @@ const sequelize = require('sequelize')
 
 router.post('/preOrder', async (req,res)=>{
 
-
+          const { Order,Flight } = req.model;
 
         // uid 不能通过 客户端发送过来 *** 
         // uid 都应该从token当中获取
