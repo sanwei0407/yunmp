@@ -76,7 +76,7 @@ router.post('/getAll', async (req,res)=>{
      const uid = req.headers['x-wx-openid'];
      try{
 
-        const linkmans = await Linkman.findOne({
+        const linkmans = await Linkman.findAll({
             where:{
                 uid
             },
