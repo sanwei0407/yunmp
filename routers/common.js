@@ -167,7 +167,10 @@ router.post('/getCityName', async (req,res)=>{
     const key = req.tenMapKey;
     let _res = await axios.get(`https://apis.map.qq.com/ws/geocoder/v1/?location=${location}&key=${key}`)
     res.send({success:true,data:_res.data})
+})
+// 此接口为了体验测试 腾讯云托管的 免鉴权
+router.post('/testWxClound',async(req,res)=>{
 
-
+    res.send({success:true, data:req.headers});
 })
 module.exports = router;
