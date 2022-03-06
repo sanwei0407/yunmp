@@ -72,7 +72,7 @@ router.post('/preOrder', async (req,res)=>{
                 orderState: 1
             })
             res.send({success:true,info:'添加成功', data: { 
-              id:order._id,
+              id:order.id,
               amount:order.amount
             }})
         }catch(e){
