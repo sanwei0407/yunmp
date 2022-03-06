@@ -73,9 +73,9 @@ router.post('/getOne',async (req,res)=>{
 // 获取全部的乘车人信息
 router.post('/getAll', async (req,res)=>{
     const { Linkman ,User} = req.model;
-     const uid = req.headers['X-WX-OPENID'];
+     const uid = req.headers['x-wx-openid'];
 
-    console.log('req',req.header)
+    console.log('req',req.headers)
   
 
      try{
