@@ -3,6 +3,6 @@ module.exports = {
   db_name:'yun',               // 数据库名称
   db_username:'root',          // 数据库用户名
   db_pwd:'Qfdixon2022',        // 数据库密码
-  db_host:'10.0.224.5',        // 数据库地址
-  db_port:3306                 // 数据库端口
+  db_host:'10.0.224.14',        // 数据库地址
+  db_port:3306 ,                // 数据库端口
 }

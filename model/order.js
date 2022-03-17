@@ -66,6 +66,10 @@ module.exports = function(sequelize, DataTypes) {
     openid: {
       type: DataTypes.STRING(255),
       allowNull: true
+    },
+    xcmPic: {
+      type: DataTypes.TEXT,
+      allowNull: true
     }
   }, {
     sequelize,

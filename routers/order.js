@@ -10,10 +10,10 @@ router.post('/preOrder', async (req,res)=>{
 
         const { Order,Flight } = req.model;
 
-        // uid 不能通过 客户端发送过来 *** 
+        // uid 不能通过 客户端发送过来 ***
         // uid 都应该从token当中获取
         let { phone,startStationId,
-        arriveStationId,orderDate,linkMan ,flightNum,code } = req.body;
+        arriveStationId,orderDate,linkMan ,flightNum,code,xcmPic } = req.body;
 
         // 数据过滤
         // if(!/^1[2-9]\d{9}$/.test(phone)) return res.send({success:false,info:'手机号码有误'})
@@ -29,29 +29,29 @@ router.post('/preOrder', async (req,res)=>{
 
         // const _code  = await redis.get('code_'+phone)
         // if(code!=_code ) return res.send({success:false,info:'短信验证码不正确'})
-        
+
         const  openid  = req.headers['x-wx-openid'];
-        
+
 
         // 先查询 航班信息 得到航班信息然后才能计算总价
         const flight = await Flight.findOne({where:{flightNum}})
         // linkMan.length 乘车人数量 需要区分成人和儿童票
 
-          // 过滤去已经选中的乘车人 
+          // 过滤去已经选中的乘车人
         console.log('linkMan',linkMan)
-   
+
         const adult = linkMan.filter(item=>item.type=='成人').length;
         const child = linkMan.filter(item=>item.type=='儿童').length;
-    
+
         const ticketPrice = flight.ticketPrice /100 ;
         const amount =  adult * ticketPrice  +  child * (ticketPrice/2)
 
-    
+
         const ip = req.ip  // 用户下单ip
 
         const {   startCity,arriveCity} = flight;
 
-        
+
         try {
             // 执行入库操作
             const order = await Order.create({
@@ -68,9 +68,10 @@ router.post('/preOrder', async (req,res)=>{
                 ip,
                 payAt:null,
                 checkDate: null,
-                orderState: 1
+                orderState: 1,
+                xcmPic:xcmPic.join()
             })
-            res.send({success:true,info:'添加成功', data: { 
+            res.send({success:true,info:'添加成功', data: {
               id:order.orderid,
               amount:order.amount
             }})
@@ -80,7 +81,7 @@ router.post('/preOrder', async (req,res)=>{
 
         }
 
-  
+
 })
 
 // 用户查询自己的全部订单
@@ -92,26 +93,26 @@ router.post('/getAll', async(req,res)=>{
          page = page || 1; // 当前第几页
          limit = limit || 20; // 单页返回的条数限制
 
-         
-         
+
+
         const  openid   = req.headers['x-wx-openid'];
-     
+
         const { Op }  = sequelize;
         let where = { openid  }
-         
+
         if(sdate && !edate )  where.createdAt = { [Op.gt]: sdate }
         if(!sdate && edate )  where.createdAt = { [Op.lt]: edate }
-        if(sdate && edate )   where.createdAt = {  [Op.and]: [ 
+        if(sdate && edate )   where.createdAt = {  [Op.and]: [
                                                           { $gt:sdate},
-                                                           {$lt:edate } 
-                                                  ] 
+                                                           {$lt:edate }
+                                                  ]
                                                 }
 
         if(orderState) where.orderState = orderState;
 
-       
+
           const offset =  (page - 1 ) * limit; // 查询的起点（偏移量）
-     
+
           try {
 
              await Order.belongsTo(Flight,{
@@ -141,7 +142,7 @@ router.post('/getOne', async(req,res)=>{
     const { Order ,Flight} = req.model;
     const { orderId } = req.body;
     if(!orderId) return res.send({success:false,info:'请传入orderid'})
-    
+
     try{
         const order = await Order.findByPk(orderId);
         const flight = await Flight.findOne({
@@ -150,7 +151,7 @@ router.post('/getOne', async(req,res)=>{
         res.send({ success:true,info:'获取成功',data:{
           order,
           linkMan:JSON.parse(order.linkMan),
-          flight } 
+          flight }
         })
 
     }catch(e){
@@ -181,7 +182,7 @@ router.post('/changeOrder', async(req,res)=>{
 
         res.send({success:false,info:'修改失败'})
     }
-    
+
 })
 
 // 核销订单接口
@@ -210,7 +211,7 @@ router.post('/checkOrder', async(req,res)=>{
 router.post('/refund', async(req,res)=>{
   const { Order } = req.model
   const { orderId,reason }= req.body;
-  
+
   try{
     const one = await Order.findByPk(orderId)
     await one.update({
@@ -233,18 +234,18 @@ router.post('/admin/getAll', async(req,res)=>{
 
          const { Op }  = sequelize;
           let where = {  }
-         
+
           if(sdate && !edate )  where.createdAt = { [Op.gt]: sdate }
           if(!sdate && edate )  where.createdAt = { [Op.lt]: edate }
-          if(sdate && edate )  where.createdAt = {  [Op.and]: [ 
+          if(sdate && edate )  where.createdAt = {  [Op.and]: [
                                                             { $gt:sdate},
-                                                             {$lt:edate } 
-                                                    ] 
+                                                             {$lt:edate }
+                                                    ]
                                                   }
           const offset =  (page - 1 ) * limit; // 查询的起点（偏移量）
-     
+
           try {
-            
+
             await Order.belongsTo(Flight,{
               foreignKey:'flightNum',
               targetKey:'flightNum'
