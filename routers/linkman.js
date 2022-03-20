@@ -8,15 +8,15 @@ router.post('/add', async (req,res)=>{
     if(!realName) return res.send( {success:false,info:'请填写真实姓名'});
     if(!idNum) return res.send( {success:false,info:'请填写身份证号码'});
     if( !/^1[23456789]\d{9}$/.test(phone)  )  return res.send( {success:false,info:'请填写一个正确的手机号码'});
-    
+
      // 使用openid来用 联系人的归属
     const uid = req.headers['x-wx-openid'];
 
-    // todo 我们需要对用户的 真实姓名和身份证号码进行检验  
+    // todo 我们需要对用户的 真实姓名和身份证号码进行检验
 
     // 添加入库
     try{
-        const one = await Linkman.findOne({ where: { phone  } }) // 找不到的话返回 null 
+        const one = await Linkman.findOne({ where: { phone  } }) // 找不到的话返回 null
         if(one) return res.send({ success:false,info:'当前手机号码已经被占用' })
 
         await Linkman.create({
@@ -47,7 +47,7 @@ router.post('/edit',async (req,res)=>{
     // 执行修改
     try{
         let one = await Linkman.findByPk( LinkManId )
-        one.update(updateData)
+        await one.update(updateData)
         res.send({success:true,info:'修改成功'})
     } catch(e) {
         res.send( {success:false,info:'未知错误 请于网站管理员联系'});
@@ -60,8 +60,11 @@ router.post('/getOne',async (req,res)=>{
     const { id } = req.body;
     const uid = req.headers['x-wx-openid'];
     const info = await Linkman.findOne({
-        uid,
-        id
+        where:{
+            uid,
+            id
+        }
+
     });
     res.send({
         success:true,
@@ -102,7 +105,7 @@ router.post('/del', async (req,res)=>{
     } catch(e) {
          res.send( {success:false,info:'删除失败'});
     }
-   
+
 })
 
 module.exports = router;
