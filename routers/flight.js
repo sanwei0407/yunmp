@@ -266,9 +266,9 @@ router.post('/admin/getAll', async (req,res)=>{
 // 根据id删除 航线信息
 router.post('/del', async (req,res)=>{
   const { id } = req.body;
-
+    const { Flight } = req.model
   try{
-      await Flight.findByIdAndDelete(id);
+      await Flight.destroy({where:{id}});
       res.send({success:true,info:'删除成功'})
   }catch(e){
       res.send({success:false,info:'删除失败'})
@@ -328,6 +328,7 @@ router.post('/tt',async (req,res)=>{
 
 router.post('/isHot',async (req,res)=>{
   const {id} = req.body;
+    const { Flight } = req.model
   try{
     const _flight = await Flight.findByPk(id)
     await _flight.update({
