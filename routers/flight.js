@@ -137,10 +137,11 @@ router.post('/edit' ,async (req,res)=>{
 
 router.post('/getHotFlight',async (req,res)=>{
     const { Flight } = req.model;
-    let _res = await Flight.findOne({
+    let _res = await Flight.findAll({
       where:{
            isHot:true
-      }
+      },
+        limit:8
     })
     res.success('',_res)
 })
