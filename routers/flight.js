@@ -329,9 +329,7 @@ router.post('/tt',async (req,res)=>{
 router.post('/isHot',async (req,res)=>{
   const {id} = req.body;
   try{
-    const _flight = await Flight.findOne({
-           _id:id
-    })
+    const _flight = await Flight.findByPk(id)
     await _flight.update({
         isHot:!_flight.isHot
     })
